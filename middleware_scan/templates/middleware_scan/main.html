@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>框架中间件扫描</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'middleware_scan/css/styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">框架中间件扫描</h1>
+        <nav class="navbar">
+            <ul>
+                <li><a href="{% url 'middleware_scan:weblogic' %}">weblogic 检测</a></li>
+                <li><a href="{% url 'middleware_scan:tomcat' %}">tomcat 检测</a></li>
+                <li><a href="{% url 'middleware_scan:django' %}">Django 检测</a></li>
+                <li><a href="{% url 'middleware_scan:spring' %}">Spring 检测</a></li>
+                <li><a href="{% url 'middleware_scan:express' %}">Express 检测</a></li>
+            </ul>
+        </nav>
+    </div>
+</body>
+</html>

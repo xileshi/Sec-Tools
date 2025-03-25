@@ -27,6 +27,7 @@ urlpatterns = [
     path('', include('login.urls')),      # 登录注册
     path('', include('dirscan.urls')),    # 目录识别
     path('', include('vulnscan.urls')),   # 漏洞检测
+    path('middleware_scan/', include('middleware_scan.urls')),
     path('webscan_backend/', include('webscan_backend.urls')),   # 后端接口
     re_path(r'media/(?P<path>.*)$', serve, {'document_root':settings.MEDIA_ROOT}),
 ]

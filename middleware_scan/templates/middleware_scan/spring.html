@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Spring 检测</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'middleware_scan/css/styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Spring 检测</h1>
+        <form action="{% url 'middleware_scan:spring' %}" method="POST" class="form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="target">目标 URL：</label>
+                <input type="text" id="target" name="target" required>
+            </div>
+            <button type="submit" class="btn">开始检测</button>
+        </form>
+        {% if result %}
+        <div class="result">
+            <h2>检测结果</h2>
+            <pre>{{ result }}</pre>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

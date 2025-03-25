@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Django 检测</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <h1>Django 检测</h1>
+    <form action="{% url 'middleware_scan:django_scan' %}" method="POST">
+        {% csrf_token %}
+        <label for="target">目标 URL：</label>
+        <input type="text" id="target" name="target" required>
+        <button type="submit">开始检测</button>
+    </form>
+    {% if result %}
+    <h2>检测结果</h2>
+    <pre>{{ result }}</pre>
+    {% endif %}
+</body>
+</html>

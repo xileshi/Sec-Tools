@@ -32,6 +32,8 @@ ALLOWED_HOSTS = ['*']
 # ]
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
+ASGI_APPLICATION = 'project.asgi.application'
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -49,6 +51,8 @@ INSTALLED_APPS = [
     'webscan_backend.apps.WebscanBackendConfig',
     'dirscan.apps.DirscanConfig',
     'vulnscan.apps.VulnscanConfig',
+    'middleware_scan',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -66,8 +70,7 @@ ROOT_URLCONF = 'Sec_Tools.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')]
-        ,
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

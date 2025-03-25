@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WebLogic 检测</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">WebLogic 检测</h1>
+        <form id="scan-form" class="form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="target">目标 IP：</label>
+                <input type="text" id="target" name="target" required>
+            </div>
+            <button type="submit" class="btn">开始检测</button>
+        </form>
+        <div id="result" class="result">
+            <h2>检测结果</h2>
+            <pre id="result-content"></pre>
+        </div>
+    </div>
+    <script>
+        document.getElementById('scan-form').onsubmit = function(e) {
+            e.preventDefault();
+            var target = document.getElementById('target').value;
+            var socket = new WebSocket('ws://' + window.location.host + '/ws/middleware_scan/');
+            socket.onmessage = function(e) {
+                var resultContent = document.getElementById('result-content');
+                resultContent.textContent += e.data + '\n';
+            };
+            socket.onopen = function(e) {
+                socket.send(target);
+            };
+            socket.onerror = function(e) {
+                console.error('WebSocket error:', e);
+            };
+            socket.onclose = function(e) {
+                console.log('WebSocket connection closed:', e);
+            };
+        };
+    </script>
+</body>
+</html>
