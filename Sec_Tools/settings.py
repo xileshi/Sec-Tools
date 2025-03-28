@@ -30,9 +30,9 @@ ALLOWED_HOSTS = ['*']
 # STATICFILES_DIRS = [
 #     os.path.join(BASE_DIR, "static")
 # ]
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
-ASGI_APPLICATION = 'project.asgi.application'
+ASGI_APPLICATION = 'Sec_Tools.asgi.application'
 
 # Application definition
 
@@ -135,9 +135,28 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-LOGIN_URL = '/login/'
-MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'middleware_scan', 'static'),
+]
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
+# Media files
 MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# 添加静态文件类型映射
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]
+
+# 添加 MIME 类型
+import mimetypes
+mimetypes.add_type("text/css", ".css", True)
+mimetypes.add_type("application/javascript", ".js", True)
+mimetypes.add_type("image/svg+xml", ".svg", True)
+
+LOGIN_URL = '/login/'
 
 #SimpleUi后台设置
 #SIMPLEUI_LOGO = 'https://jwt1399.top//medias/logo.png' #登录页和后台logo
@@ -147,9 +166,21 @@ SIMPLEUI_LOADING = False #是否打开Loading遮罩层
 SIMPLEUI_LOGIN_PARTICLES = True #登录页粒子动画
 SIMPLEUI_STATIC_OFFLINE = True #是否以脱机模式加载静态资源，为True的时候将默认从本地读取所有资源，即使没有联网一样可以。适合内网项目，不填该项或者为False的时候，默认从第三方的cdn获取
 SIMPLEUI_HOME_INFO = False #是否打开SimpleUi服务器信息
-SIMPLEUI_DEFAULT_THEME = 'simpleui.css' #默认主题 https://simpleui.88cto.com/docs/simpleui/QUICK.html#%E9%BB%98%E8%AE%A4%E4%B8%BB%E9%A2%98
+SIMPLEUI_DEFAULT_THEME = 'admin.lte.css' #默认主题 https://simpleui.88cto.com/docs/simpleui/QUICK.html#%E9%BB%98%E8%AE%A4%E4%B8%BB%E9%A2%98
 SIMPLEUI_HOME_QUICK = True #后台页面是否显示最近动作
 
+# SimpleUI配置
+SIMPLEUI_CONFIG = {
+    'system_keep': False,
+    'menu_display': ['中间件漏洞扫描'],
+    'dynamic': False,
+    'menus': []
+}
+
+# 禁用SimpleUI的默认首页
+SIMPLEUI_HOME_PAGE = ''
+SIMPLEUI_HOME_TITLE = ''
+SIMPLEUI_HOME_ICON = ''
 
 # AWVS URL和API key  服务器版本
 API_URL = 'https://your:3443'
@@ -225,5 +256,12 @@ SIMPLEUI_CONFIG = {
             'icon': 'fas fa-crown'
         }]
     }]
+}
+
+# Channels设置
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer'
+    }
 }
 

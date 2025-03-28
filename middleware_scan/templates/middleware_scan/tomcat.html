@@ -1,28 +1,77 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>Tomcat 检测</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'middleware_scan/css/styles.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tomcat漏洞扫描</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .console-output {
+            background-color: #1e1e1e;
+            color: #00ff00;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 15px;
+            border-radius: 5px;
+            height: 500px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            margin-top: 20px;
+        }
+        .back-link {
+            margin-bottom: 20px;
+        }
+        /* 添加颜色支持 */
+        .console-output span {
+            font-weight: bold;
+        }
+        .high-risk {
+            color: #ff4444;
+            font-weight: bold;
+        }
+        .medium-risk {
+            color: #ffbb33;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="title">Tomcat 检测</h1>
-        <form action="{% url 'middleware_scan:tomcat' %}" method="POST" class="form">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="target">目标 URL：</label>
-                <input type="text" id="target" name="target" required>
-            </div>
-            <button type="submit" class="btn">开始检测</button>
-        </form>
-        {% if result %}
-        <div class="result">
-            <h2>检测结果</h2>
-            <pre>{{ result }}</pre>
+    <div class="container mt-5">
+        <div class="back-link">
+            <a href="{% url 'middleware_scan:main' %}" class="btn btn-secondary">&larr; 返回主页</a>
         </div>
-        {% endif %}
+        
+        <div class="card">
+            <div class="card-body">
+                <h2 class="card-title mb-4">Tomcat漏洞扫描</h2>
+                
+                <form method="post" class="mb-4">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <input type="text" name="target" class="form-control" 
+                               placeholder="请输入目标URL (例如: example.com:8080 或 example.com/manager/html)" required>
+                        <button type="submit" class="btn btn-primary">开始扫描</button>
+                    </div>
+                    <small class="form-text text-muted">
+                        提示：可以输入域名或IP，不需要添加http://，程序会自动处理
+                    </small>
+                </form>
+
+                {% if result %}
+                <div class="mt-4">
+                    <h4>扫描结果：</h4>
+                    <div class="console-output" id="output">{{ result|safe }}</div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
     </div>
+
+    <script>
+        // 自动滚动到底部
+        var output = document.getElementById('output');
+        if (output) {
+            output.scrollTop = output.scrollHeight;
+        }
+    </script>
 </body>
 </html>

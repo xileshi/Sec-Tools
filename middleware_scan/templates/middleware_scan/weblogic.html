@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>WebLogic 检测</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'middleware_scan/css/styles.css' %}">
 </head>
 <body>
     <div class="container">
@@ -26,20 +26,42 @@
         document.getElementById('scan-form').onsubmit = function(e) {
             e.preventDefault();
             var target = document.getElementById('target').value;
-            var socket = new WebSocket('ws://' + window.location.host + '/ws/middleware_scan/');
-            socket.onmessage = function(e) {
-                var resultContent = document.getElementById('result-content');
-                resultContent.textContent += e.data + '\n';
-            };
-            socket.onopen = function(e) {
-                socket.send(target);
-            };
-            socket.onerror = function(e) {
-                console.error('WebSocket error:', e);
-            };
-            socket.onclose = function(e) {
-                console.log('WebSocket connection closed:', e);
-            };
+            var resultContent = document.getElementById('result-content');
+            resultContent.textContent = '正在连接WebSocket...\n';
+            
+            var wsUrl = 'ws://' + window.location.host + '/ws/middleware_scan/weblogic/';
+            console.log('Connecting to WebSocket:', wsUrl);
+            
+            try {
+                var socket = new WebSocket(wsUrl);
+                
+                socket.onmessage = function(e) {
+                    console.log('Received message:', e.data);
+                    resultContent.textContent += e.data + '\n';
+                };
+                
+                socket.onopen = function(e) {
+                    console.log('WebSocket connection established');
+                    resultContent.textContent += '连接成功，开始扫描...\n';
+                    socket.send(target);
+                };
+                
+                socket.onerror = function(e) {
+                    console.error('WebSocket error:', e);
+                    resultContent.textContent += '连接错误，请检查网络连接或刷新页面重试\n';
+                };
+                
+                socket.onclose = function(e) {
+                    console.log('WebSocket connection closed:', e);
+                    resultContent.textContent += '连接已关闭，代码: ' + e.code + '\n';
+                    if (e.reason) {
+                        resultContent.textContent += '原因: ' + e.reason + '\n';
+                    }
+                };
+            } catch (error) {
+                console.error('Error creating WebSocket:', error);
+                resultContent.textContent += '创建WebSocket连接时发生错误: ' + error.message + '\n';
+            }
         };
     </script>
 </body>

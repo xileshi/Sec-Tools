@@ -1,28 +1,187 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>Spring 检测</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'middleware_scan/css/styles.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spring漏洞扫描</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            color: #333;
+            font-family: "Microsoft YaHei", sans-serif;
+        }
+
+        .main-container {
+            padding: 2rem;
+            max-width: 1000px;
+            margin: 2rem auto;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .card-header {
+            background: linear-gradient(45deg, #2196F3, #3F51B5);
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            padding: 1.2rem;
+        }
+
+        .card-header h5 {
+            margin: 0;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            padding: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #2196F3;
+            box-shadow: 0 0 0 0.2rem rgba(33, 150, 243, 0.25);
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #2196F3, #3F51B5);
+            border: none;
+            border-radius: 8px;
+            padding: 0.8rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
+        }
+
+        #output {
+            background: #1a1a1a;
+            color: #00ff00;
+            font-family: 'Consolas', monospace;
+            padding: 1rem;
+            border-radius: 8px;
+            height: 400px;
+            overflow-y: auto;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        #output::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #output::-webkit-scrollbar-track {
+            background: #2a2a2a;
+        }
+
+        #output::-webkit-scrollbar-thumb {
+            background: #666;
+            border-radius: 4px;
+        }
+
+        .input-group {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .scan-title {
+            margin-bottom: 1rem;
+            color: #666;
+            font-weight: 600;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="title">Spring 检测</h1>
-        <form action="{% url 'middleware_scan:spring' %}" method="POST" class="form">
-            {% csrf_token %}
-            <div class="form-group">
-                <label for="target">目标 URL：</label>
-                <input type="text" id="target" name="target" required>
+    <div class="main-container">
+        <div class="card">
+            <div class="card-header">
+                <h5>Spring漏洞扫描</h5>
             </div>
-            <button type="submit" class="btn">开始检测</button>
-        </form>
-        {% if result %}
-        <div class="result">
-            <h2>检测结果</h2>
-            <pre>{{ result }}</pre>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="url" class="scan-title">目标URL:</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="url" placeholder="请输入目标URL (例如: http://example.com)">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" onclick="startScan()">开始扫描</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <h6 class="scan-title">扫描结果:</h6>
+                    <div id="output"></div>
+                </div>
+            </div>
         </div>
-        {% endif %}
     </div>
+
+    <script>
+    let ws = null;
+
+    function connectWebSocket() {
+        ws = new WebSocket('ws://' + window.location.host + '/ws/spring/');
+        
+        ws.onopen = function() {
+            appendOutput('系统就绪，等待扫描...');
+        };
+        
+        ws.onmessage = function(event) {
+            appendOutput(event.data);
+        };
+        
+        ws.onclose = function() {
+            appendOutput('连接已断开，正在重新连接...');
+            setTimeout(connectWebSocket, 2000);
+        };
+        
+        ws.onerror = function(error) {
+            appendOutput('错误: ' + error);
+        };
+    }
+
+    function appendOutput(message) {
+        const output = document.getElementById('output');
+        const timestamp = new Date().toLocaleTimeString();
+        output.innerHTML += `[${timestamp}] ${message}<br>`;
+        output.scrollTop = output.scrollHeight;
+    }
+
+    function startScan() {
+        const url = document.getElementById('url').value.trim();
+        if (!url) {
+            alert('请输入目标URL');
+            return;
+        }
+        
+        document.getElementById('output').innerHTML = '';
+        appendOutput('开始扫描目标: ' + url);
+        
+        if (ws && ws.readyState === WebSocket.OPEN) {
+            ws.send(url);
+        } else {
+            appendOutput('WebSocket连接已断开，正在重新连接...');
+            connectWebSocket();
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', connectWebSocket);
+    </script>
 </body>
 </html>

@@ -1,23 +1,256 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>框架中间件扫描</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'middleware_scan/css/styles.css' %}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中间件漏洞扫描</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            background-image: url('/static/admin/simpleui-x/img/bg.svg');
+            background-repeat: no-repeat;
+            background-size: 100%;
+            min-height: 100vh;
+        }
+        
+        .content-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;  /* 增加上下内边距 */
+        }
+        
+        .card {
+            transition: transform 0.2s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: none;
+            border-radius: 10px;
+            background: white;
+            margin-bottom: 60px;  /* 增加到60px，原来是40px */
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card-title {
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 1.5rem;  /* 增加标题和描述之间的间距 */
+        }
+        
+        .card-text {
+            color: #7f8c8d;
+            margin-bottom: 2rem;  /* 增加描述和按钮之间的间距 */
+        }
+        
+        .btn-primary {
+            background-color: #3498db;
+            border-color: #3498db;
+            padding: 0.5rem 2rem;
+            border-radius: 5px;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+        }
+        
+        .main-title {
+            text-align: center;
+            color: #2c3e50;
+            font-weight: 600;
+            margin: 20px 0 60px;  /* 增加标题和卡片之间的间距 */
+            font-size: 24px;
+        }
+
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+        }
+
+        .row {
+            margin-top: 40px;  /* 增加到40px，原来是20px */
+            margin-bottom: 40px; /* 新增底部间距 */
+        }
+
+        .col-md-4 {
+            margin-bottom: 40px; /* 为每个列添加底部间距 */
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="title">框架中间件扫描</h1>
-        <nav class="navbar">
-            <ul>
-                <li><a href="{% url 'middleware_scan:weblogic' %}">weblogic 检测</a></li>
-                <li><a href="{% url 'middleware_scan:tomcat' %}">tomcat 检测</a></li>
-                <li><a href="{% url 'middleware_scan:django' %}">Django 检测</a></li>
-                <li><a href="{% url 'middleware_scan:spring' %}">Spring 检测</a></li>
-                <li><a href="{% url 'middleware_scan:express' %}">Express 检测</a></li>
-            </ul>
-        </nav>
+    <div id="particles-js"></div>
+    
+    <div class="content-wrapper">
+        <h3 class="main-title">中间件漏洞扫描工具</h3>
+        
+        <div class="row justify-content-center">
+            <!-- Spring扫描模块 -->
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Spring漏洞扫描</h5>
+                        <p class="card-text">检测Spring框架相关漏洞，包括Spring Cloud Gateway等组件漏洞。</p>
+                        <a href="/middleware_scan/spring/" class="btn btn-primary">开始扫描</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Struts2扫描模块 -->
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Struts2漏洞扫描</h5>
+                        <p class="card-text">检测Struts2框架相关漏洞，支持多个版本漏洞检测。</p>
+                        <a href="/middleware_scan/struts2/" class="btn btn-primary">开始扫描</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ThinkPHP扫描模块 -->
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">ThinkPHP漏洞扫描</h5>
+                        <p class="card-text">检测ThinkPHP框架相关漏洞，支持多个版本漏洞检测。</p>
+                        <a href="/middleware_scan/thinkphp/" class="btn btn-primary">开始扫描</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tomcat扫描模块 -->
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Tomcat漏洞扫描</h5>
+                        <p class="card-text">检测Tomcat服务器相关漏洞，支持多个版本漏洞检测。</p>
+                        <a href="/middleware_scan/tomcat/" class="btn btn-primary">开始扫描</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WebLogic扫描模块 -->
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">WebLogic漏洞扫描</h5>
+                        <p class="card-text">检测WebLogic服务器相关漏洞，支持多个版本漏洞检测。</p>
+                        <a href="/middleware_scan/weblogic/" class="btn btn-primary">开始扫描</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Laravel扫描模块 -->
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">Laravel漏洞扫描</h5>
+                        <p class="card-text">仅支持laravel框架的cve-2021-3129</p>
+                        <a href="/middleware_scan/laravel/" class="btn btn-primary">开始扫描</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 添加 PHPGGC 卡片 -->
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">PHPGGC</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">PHP反序列化链生成工具，支持多种框架的反序列化利用链生成。</p>
+                        <ul>
+                            <li>支持多种PHP框架</li>
+                            <li>可查看链信息</li>
+                            <li>自定义参数生成</li>
+                        </ul>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{% url 'middleware_scan:phpggc_scan' %}" class="btn btn-primary">开始使用</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 在现有卡片组中修改SSTI卡片 -->
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Python SSTI</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Python模板注入检测工具，基于Fenjing框架。</p>
+                        <ul>
+                            <li>自动启动WebUI界面</li>
+                            <li>支持多种模板引擎</li>
+                            <li>实时检测结果</li>
+                        </ul>
+                        <div id="ssti-status" class="alert alert-info d-none">
+                            <!-- 状态信息将在这里显示 -->
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button onclick="startSSTI()" class="btn btn-primary" id="ssti-btn">启动工具</button>
+                        <a href="http://127.0.0.1:11451" target="_blank" class="btn btn-success d-none" id="ssti-link">打开WebUI</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
+    <script src="/static/admin/simpleui-x/particles/particles.js"></script>
+    <script src="/static/admin/simpleui-x/particles/app.js"></script>
+    <script>
+    function startSSTI() {
+        const statusDiv = document.getElementById('ssti-status');
+        const startBtn = document.getElementById('ssti-btn');
+        const webUILink = document.getElementById('ssti-link');
+        
+        statusDiv.classList.remove('d-none');
+        statusDiv.innerHTML = '正在启动SSTI检测工具...';
+        startBtn.disabled = true;
+        
+        const ws = new WebSocket(`ws://${window.location.host}/ws/ssti/`);
+        
+        ws.onmessage = function(event) {
+            const message = event.data;
+            statusDiv.innerHTML += '<br>' + message;
+            
+            if (message.includes('成功启动在')) {
+                startBtn.classList.add('d-none');
+                webUILink.classList.remove('d-none');
+                statusDiv.classList.remove('alert-info');
+                statusDiv.classList.add('alert-success');
+            } else if (message.includes('失败')) {
+                statusDiv.classList.remove('alert-info');
+                statusDiv.classList.add('alert-danger');
+                startBtn.disabled = false;
+            }
+        };
+        
+        ws.onerror = function(error) {
+            statusDiv.classList.remove('alert-info');
+            statusDiv.classList.add('alert-danger');
+            statusDiv.innerHTML += '<br>连接错误: ' + error;
+            startBtn.disabled = false;
+        };
+        
+        ws.onclose = function() {
+            if (!statusDiv.classList.contains('alert-success')) {
+                statusDiv.classList.remove('alert-info');
+                statusDiv.classList.add('alert-warning');
+                statusDiv.innerHTML += '<br>连接已关闭';
+                startBtn.disabled = false;
+            }
+        };
+    }
+    </script>
 </body>
 </html>

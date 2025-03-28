@@ -58,5 +58,3 @@ def register(request):
 def login_out(request):
     logout(request)  # 注销
     return redirect("/index")  # 页面跳转
-
-

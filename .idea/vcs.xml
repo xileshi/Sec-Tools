@@ -2,5 +2,8 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/tools/Struts2-Scan" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/tools/TPscan" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/tools/laravel/CVE-2021-3129-exp" vcs="Git" />
   </component>
 </project>
